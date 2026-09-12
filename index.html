@@ -446,7 +446,52 @@ details[open] summary { margin-bottom: 12px; }
   max-width:none!important;
 }
 
+
+/* Petit encart météo-France — pluie dans l'heure */
+.mf-rain-hour-mini{
+  margin:10px 12px 12px;
+  padding:9px 12px;
+  border:1px solid var(--card-border);
+  border-radius:12px;
+  background:rgba(52,152,219,.08);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  font-size:12px;
+}
+.mf-rain-hour-mini-text{
+  color:var(--subtitle-color);
+  line-height:1.35;
+}
+.mf-rain-hour-mini-text strong{
+  color:var(--text-color);
+  font-size:12px;
+}
+.mf-rain-hour-mini a{
+  flex:none;
+  display:inline-block;
+  padding:7px 10px;
+  border-radius:9px;
+  background:#3498db;
+  color:#fff;
+  text-decoration:none;
+  font-weight:700;
+  white-space:nowrap;
+}
+@media (max-width:600px){
+  .mf-rain-hour-mini{padding:8px 10px;gap:7px;}
+  .mf-rain-hour-mini a{padding:6px 8px;font-size:11px;}
+}
 </style> 
+
+<style id="mf-rain-button-style">
+.mf-rain-link-card{margin:18px 0;padding:16px;text-align:center;border-radius:16px;background:var(--card,#fff);border:1px solid rgba(127,127,127,.18);box-shadow:0 4px 16px rgba(0,0,0,.08);position:relative;z-index:10;}
+.mf-rain-link-title{font-size:1.1rem;font-weight:900;margin-bottom:6px;}
+.mf-rain-link-sub{font-size:.88rem;opacity:.78;margin-bottom:12px;}
+.mf-rain-link{display:inline-block;padding:12px 18px;border-radius:12px;background:#2f80ed;color:#fff!important;text-decoration:none!important;font-weight:900;}
+.mf-rain-link:active{transform:scale(.98);}
+</style>
 </head> 
 <body> 
 <div class="container"> 
@@ -1612,6 +1657,13 @@ function updateShortTermSummary(h, idx) {
       <div class="rain24-hours rain24-dir-row">${labelCell('DIRECTION','DU VENT')}${dirCells}</div>
     </div></div>
     <div class="rain24-legend"><span>● Maintenant</span><span>— Prévision horaire</span></div>
+    <div class="mf-rain-hour-mini">
+      <div class="mf-rain-hour-mini-text">
+        🌧️ <strong>Pluie dans l’heure</strong><br>
+        Prévision détaillée Météo Agricole
+      </div>
+      <a href="https://www.lameteoagricole.net/meteo-minute-par-minute/Cherbourg-Octeville-50100.html" target="_blank" rel="noopener noreferrer">Voir →</a>
+    </div>
   `;
 }
 // --- MISE À JOUR MAJEURE : RÉSUMÉ 7 JOURS AVEC TRANCHES MATIN/APM/SOIR, SPARKLINE PLUIE & RAFALES ET HEURES EN DESSOUS ---
@@ -2646,6 +2698,12 @@ async function loadAll() {
 loadAll(); 
 setInterval(loadAll, 10 * 60 * 1000); 
 </script> 
+
+<div class="mf-rain-link-card">
+  <div class="mf-rain-link-title">🌧️ PLUIE DANS L’HEURE</div>
+  <div class="mf-rain-link-sub">Prévision officielle Météo-France pour Cherbourg</div>
+  <a class="mf-rain-link" href="https://www.lameteoagricole.net/meteo-minute-par-minute/Cherbourg-Octeville-50100.html" target="_blank" rel="noopener noreferrer">👉 Voir la pluie dans l’heure sur Météo-France</a>
+</div>
 </body> 
 </html>
 
