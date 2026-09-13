@@ -204,6 +204,8 @@ details[open] summary { margin-bottom: 12px; }
 .rain24-series.gust .rain24-point-value{color:#f5ad72}
 .rain24-series.humidity .rain24-point,.rain24-series.humidity .rain24-line-seg{background:#67d6c0}
 .rain24-series.humidity .rain24-point-value{color:#8be6d5}
+.rain24-series.pressure .rain24-point,.rain24-series.pressure .rain24-line-seg{background:#79b7ff}
+.rain24-series.pressure .rain24-point-value{color:#b9d7ff}
 .rain24-series.storm{min-height:42px}
 .rain24-series.storm .rain24-storm-cell{height:42px;display:flex;align-items:center;justify-content:center}
 .rain24-storm-dot{width:13px;height:13px;border-radius:50%;box-shadow:0 0 8px rgba(255,255,255,.08)}
@@ -230,11 +232,13 @@ details[open] summary { margin-bottom: 12px; }
 .foglegend-1{background:#e0c45a}
 .foglegend-2{background:#f09a45}
 .foglegend-3{background:#e85d68}
-.rain24-wind-row,.rain24-dir-row{border-top:1px solid rgba(255,255,255,.08);min-height:54px}
-.rain24-wind-row .rain24-cell{padding:5px 2px}
-.rain24-value{font-size:12px;font-weight:800}
-.rain24-dir-row .rain24-cell{padding:7px 2px}
-.rain24-arrow{display:inline-block;font-size:16px;line-height:1;color:#c7d2dc;transform-origin:center}
+/* Pression atmosphérique : ligne horaire dédiée */
+.rain24-series.pressure{min-height:48px}
+.rain24-series.pressure .rain24-plot{min-height:48px;height:48px}
+.rain24-series.pressure .rain24-point-value{color:#b9d7ff;font-size:10px}
+.rain24-series.pressure .rain24-point{background:#79b7ff}
+.rain24-wind-value{position:absolute;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;white-space:nowrap;font-size:10px;font-weight:800;transform:translate(-50%,-4px);left:50%}
+.rain24-wind-arrow{display:block;font-size:11px;line-height:1;transform-origin:50% 50%;color:#c7d2dc}
 .rain24-legend{display:flex;justify-content:flex-end;gap:14px;padding:7px 16px 9px;color:var(--subtext);font-size:10px}
 @media (max-width:700px){
   .rain24-wrap{border-radius:14px}
@@ -246,7 +250,6 @@ details[open] summary { margin-bottom: 12px; }
   .rain24-kpi-value{font-size:17px}
   .rain24-series,.rain24-plot{min-height:70px}
   .rain24-bars,.rain24-bar-cell,.rain24-line-grid,.rain24-line-cell{height:54px}
-  .rain24-wind-row,.rain24-dir-row{min-height:50px}
   .rain24-point-value,.rain24-bar-value{font-size:9px}
 
   .rain24-kpis{width:100%}
@@ -292,11 +295,11 @@ details[open] summary { margin-bottom: 12px; }
   .rain24-point{width:4px;height:4px}
   .rain24-line-seg{height:1.5px}
   .rain24-point-value{font-size:7px;transform:translateY(-5px)}
-  .rain24-wind-row,.rain24-dir-row{min-height:32px}
-  .rain24-wind-row .rain24-cell{padding:2px 0}
-  .rain24-value{font-size:8px}
-  .rain24-dir-row .rain24-cell{padding:3px 0}
-  .rain24-arrow{font-size:11px}
+  .rain24-series.pressure{min-height:38px}
+  .rain24-series.pressure .rain24-plot{min-height:38px;height:38px}
+  .rain24-series.pressure .rain24-point-value{font-size:6px}
+  .rain24-wind-value{font-size:7px;transform:translate(-50%,-1px);gap:1px}
+  .rain24-wind-arrow{font-size:9px}
   .rain24-legend{padding:3px 7px 4px;font-size:7px;gap:8px}
 }
 
@@ -520,7 +523,6 @@ details[open] summary { margin-bottom: 12px; }
       <a href="#card-modele" class="nav-btn">🤖 Modèle</a>
       <a href="#card-comparateur" class="nav-btn">📈 Comparateur</a>
       <a href="#card-alertes" class="nav-btn">⚙️ Alertes</a>
-      <a href="#card-top-summary" class="nav-btn">⚠️ Vigilance</a>
     </nav>
 
     <div class="status" id="status"> ⏳ Chargement... </div> 
@@ -534,28 +536,6 @@ details[open] summary { margin-bottom: 12px; }
         <div style="font-size:10px;color:var(--subtext);margin-top:2px;">Observation météo locale • Cherbourg</div>
       </div>
       <iframe seamless src="https://www.infoclimat.fr/infoclimat/vignette_fiche_temps.php?s=STATIC0464" frameborder="0" marginwidth="0" marginheight="0" border="0" width="112" height="85" scrolling="no" style="flex:0 0 112px;"></iframe>
-    </div>
-  </div>
-
-  <!-- BANDEAU RAPIDE : VIGILANCE & SOLEIL EN HAUT DE PAGE -->
-  <div class="card" id="card-top-summary" style="border-left: 4px solid #f1c40f; background: rgba(241, 196, 15, 0.05);">
-    <div class="grid-2" style="gap: 8px;">
-      <div class="compareBox" style="text-align: center; padding: 8px;">
-        <div class="label" style="font-weight: bold; margin-bottom: 4px;">⚠️ VIGILANCE MÉTÉO (MANCHE)</div>
-        <div style="font-size: 12px; margin-bottom: 2px;">Aujourd'hui : <span id="topVigToday" style="font-weight: bold;">--</span></div>
-        <div style="font-size: 12px;">Demain : <span id="topVigTomorrow" style="font-weight: bold;">--</span></div>
-      </div>
-      <div class="compareBox" style="display: flex; justify-content: space-around; align-items: center; padding: 8px; text-align: center;">
-        <div>
-          <div class="label">🌅 LEVER</div>
-          <div id="topSunRise" style="font-size: 13px; font-weight: bold; margin-top: 2px;">--:--</div>
-        </div>
-        <div style="border-left: 1px solid var(--card-border); height: 24px;"></div>
-        <div>
-          <div class="label">🌇 COUCHER</div>
-          <div id="topSunSet" style="font-size: 13px; font-weight: bold; margin-top: 2px;">--:--</div>
-        </div>
-      </div>
     </div>
   </div>
 
@@ -1371,6 +1351,7 @@ function updateShortTermSummary(h, idx) {
       wind: Number(h.wind_speed_10m?.[i] ?? 0),
       gust: Number(h.wind_gusts_10m?.[i] ?? 0),
       windDir: Number(h.wind_direction_10m?.[i] ?? 0),
+      pressure: Number(h.pressure_msl?.[i] ?? h.surface_pressure?.[i] ?? NaN),
       code: h.weather_code?.[i],
       visEcmwf: Number(h.__visibility?.ecmwf?.[i] ?? NaN),
       visIcon: Number(h.__visibility?.icon?.[i] ?? NaN),
@@ -1439,21 +1420,50 @@ function updateShortTermSummary(h, idx) {
     return `<div class="rain24-bar-cell">${shown}<div class="rain24-bar" style="height:${pct}%"></div></div>`;
   }).join('');
 
-  function lineCells(key, maxVal, colorClass) {
+  function lineCells(key, maxVal, colorClass, minVal=0) {
     return hours.map((x, i) => {
-      const val = Number(x[key] ?? 0);
-      const pct = Math.max(8, Math.min(82, (val / maxVal) * 100));
+      const val = Number(x[key]);
+      const safeVal = Number.isFinite(val) ? val : Number(minVal);
+      const denom = Math.max(1e-9, Number(maxVal) - Number(minVal));
+      const pct = Math.max(8, Math.min(82, ((safeVal - Number(minVal)) / denom) * 74 + 8));
       let seg = '';
       if (i < hours.length - 1) {
-        const next = Number(hours[i+1][key] ?? 0);
-        const nextPct = Math.max(8, Math.min(82, (next / maxVal) * 100));
+        const nextRaw = Number(hours[i+1][key]);
+        const next = Number.isFinite(nextRaw) ? nextRaw : safeVal;
+        const nextPct = Math.max(8, Math.min(82, ((next - Number(minVal)) / denom) * 74 + 8));
         const dy = pct - nextPct;
         const dx = 100;
         const angle = Math.atan2(dy, dx) * 180 / Math.PI;
         const len = Math.sqrt(dx*dx + dy*dy);
         seg = `<div class="rain24-line-seg" style="left:50%; bottom:${pct}%; width:${len}%; transform:rotate(${angle}deg)"></div>`;
       }
-      return `<div class="rain24-line-cell ${colorClass}">${seg}<div class="rain24-point-value" style="bottom:${pct}%">${Math.round(val)}</div><div class="rain24-point" style="bottom:${pct}%"></div></div>`;
+      const showValue = key !== 'pressure' || i % 2 === 0;
+    return `<div class="rain24-line-cell ${colorClass}">${seg}${showValue ? `<div class="rain24-point-value" style="bottom:${pct}%">${Number.isFinite(val) ? Math.round(val) : '—'}</div>` : ''}<div class="rain24-point" style="bottom:${pct}%"></div></div>`;
+    }).join('');
+  }
+
+  // Vent moyen : vitesse + flèche de direction dans la même cellule,
+  // afin de conserver une seule ligne dans le tableau 24 h.
+  function windLineCells(maxVal) {
+    return hours.map((x, i) => {
+      const val = Number(x.wind);
+      const safeVal = Number.isFinite(val) ? val : 0;
+      const denom = Math.max(1e-9, Number(maxVal));
+      const pct = Math.max(8, Math.min(82, (safeVal / denom) * 74 + 8));
+      let seg = '';
+      if (i < hours.length - 1) {
+        const nextRaw = Number(hours[i+1].wind);
+        const next = Number.isFinite(nextRaw) ? nextRaw : safeVal;
+        const nextPct = Math.max(8, Math.min(82, (next / denom) * 74 + 8));
+        const dy = pct - nextPct;
+        const dx = 100;
+        const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+        const len = Math.sqrt(dx*dx + dy*dy);
+        seg = `<div class="rain24-line-seg" style="left:50%; bottom:${pct}%; width:${len}%; transform:rotate(${angle}deg)"></div>`;
+      }
+      const deg = Number(x.windDir);
+      const arrow = Number.isFinite(deg) ? `<span class="rain24-wind-arrow" style="transform:rotate(${deg}deg)">↑</span>` : '';
+      return `<div class="rain24-line-cell wind">${seg}<div class="rain24-wind-value" style="bottom:${pct}%"><span>${Number.isFinite(val) ? Math.round(val) : '—'}</span>${arrow}</div><div class="rain24-point" style="bottom:${pct}%"></div></div>`;
     }).join('');
   }
 
@@ -1488,31 +1498,24 @@ function updateShortTermSummary(h, idx) {
   function fogScore(x) {
     const vals = visibilityValues(x);
     const spread = Number.isFinite(x.dew) ? (x.temp - x.dew) : NaN;
-    const favorable = x.humidity >= 90 && Number.isFinite(spread) && spread <= 2.0 && x.wind <= 20;
-    const veryFavorable = x.humidity >= 94 && Number.isFinite(spread) && spread <= 1.2 && x.wind <= 15;
     const under5 = vals.filter(v => v < 5000).length;
     const under2 = vals.filter(v => v < 2000).length;
     const under1 = vals.filter(v => v < 1000).length;
 
-    // La visibilité est prioritaire, mais on évite qu'un seul modèle
-    // isolé transforme toute la période en jaune/orange.
-    // Le contexte humidité/point de rosée/vent sert à confirmer.
-    if (under1 >= 2) return 3;
-    if ((Number(x.code) === 45 || Number(x.code) === 48) && (under1 >= 1 || favorable)) return 3;
+    // Le vent fort limite fortement la formation de brouillard.
+    // Un seul modèle pessimiste ne suffit jamais à créer orange ou rouge.
+    const redEnvironment = x.wind < 10 && x.humidity >= 96 && Number.isFinite(spread) && spread <= 1.0;
+    const orangeEnvironment = x.wind < 12 && x.humidity >= 94 && Number.isFinite(spread) && spread <= 1.2;
 
-    if (under2 >= 2) return 2;
-    if (under2 >= 1 && favorable) return 2;
-
-    // Jaune seulement si la visibilité est réellement dégradée.
-    // Une faible humidité seule ne suffit pas.
+    if (under1 >= 2 && redEnvironment) return 3;
+    if (under2 >= 2 && orangeEnvironment) return 2;
     if (under5 >= 2) return 1;
-    if (under5 >= 1 && (favorable || veryFavorable)) return 1;
-
+    if (under5 >= 1 && x.humidity >= 94 && Number.isFinite(spread) && spread <= 1.5 && x.wind < 20) return 1;
     return 0;
   }
 
   function fogCells() {
-    const labels = ['Pas de risque','Brume','Risque','Brouillard'];
+    const labels = ['Pas de risque','Brume possible','Risque de brouillard','Brouillard probable'];
     return hours.map(x => {
       const score = fogScore(x);
       const vals = visibilityValues(x);
@@ -1580,10 +1583,14 @@ function updateShortTermSummary(h, idx) {
   const riskMax = Math.max(100, ...hours.map(x => x.risk));
   const cloudMax = Math.max(100, ...hours.map(x => x.cloud));
   const humidityMax = Math.max(100, ...hours.map(x => x.humidity));
+  const pressureValues = hours.map(x => Number(x.pressure)).filter(Number.isFinite);
+  const pressureMin = pressureValues.length ? Math.min(...pressureValues) : 1010;
+  const pressureMax = pressureValues.length ? Math.max(...pressureValues) : 1013;
+  const pressureRange = Math.max(1, pressureMax - pressureMin);
+  const pressurePlotMin = pressureMin - Math.max(1, pressureRange * 0.15);
+  const pressurePlotMax = pressureMax + Math.max(1, pressureRange * 0.15);
   const windScale = Math.max(20, ...hours.map(x => x.wind));
   const gustScale = Math.max(35, ...hours.map(x => x.gust));
-
-  const dirCells = hours.map(x => `<div class="rain24-cell"><span class="rain24-arrow" style="transform:rotate(${x.windDir}deg)">↑</span></div>`).join('');
 
   const timelineContainer = document.getElementById("summaryTimeline");
   timelineContainer.innerHTML = `
@@ -1622,15 +1629,20 @@ function updateShortTermSummary(h, idx) {
         <div class="rain24-plot"><div class="rain24-line-grid">${lineCells('humidity', humidityMax, 'humidity')}</div></div>
       </div>
 
+      <div class="rain24-hours rain24-series pressure">
+        ${labelCell('PRESSION','hPa')}
+        <div class="rain24-plot"><div class="rain24-line-grid">${lineCells('pressure', pressurePlotMax, 'pressure', pressurePlotMin)}</div></div>
+      </div>
+
       <div class="rain24-hours rain24-series fog">
         ${labelCell('BROUILLARD','visibilité')}
         <div class="rain24-plot"><div class="rain24-line-grid">${fogCells()}</div></div>
       </div>
       <div class="rain24-fog-legend">
         <span><i class="foglegend-dot foglegend-0"></i>Pas de risque</span>
-        <span><i class="foglegend-dot foglegend-1"></i>Brume</span>
-        <span><i class="foglegend-dot foglegend-2"></i>Risque</span>
-        <span><i class="foglegend-dot foglegend-3"></i>Brouillard</span>
+        <span><i class="foglegend-dot foglegend-1"></i>Brume possible</span>
+        <span><i class="foglegend-dot foglegend-2"></i>Risque de brouillard</span>
+        <span><i class="foglegend-dot foglegend-3"></i>Brouillard probable</span>
       </div>
 
       <div class="rain24-hours rain24-series storm">
@@ -1646,7 +1658,7 @@ function updateShortTermSummary(h, idx) {
 
       <div class="rain24-hours rain24-series wind">
         ${labelCell('VENT MOYEN','km/h')}
-        <div class="rain24-plot"><div class="rain24-line-grid">${lineCells('wind', windScale, 'wind')}</div></div>
+        <div class="rain24-plot"><div class="rain24-line-grid">${windLineCells(windScale)}</div></div>
       </div>
 
       <div class="rain24-hours rain24-series gust">
@@ -1654,7 +1666,7 @@ function updateShortTermSummary(h, idx) {
         <div class="rain24-plot"><div class="rain24-line-grid">${lineCells('gust', gustScale, 'gust')}</div></div>
       </div>
 
-      <div class="rain24-hours rain24-dir-row">${labelCell('DIRECTION','DU VENT')}${dirCells}</div>
+      
     </div></div>
     <div class="rain24-legend"><span>● Maintenant</span><span>— Prévision horaire</span></div>
     <div class="mf-rain-hour-mini">
@@ -2220,6 +2232,38 @@ async function loadEcmwfTrendData() {
     if (!res.ok) throw new Error();
     const data = await res.json();
     const h = data.hourly;
+
+    // Secours pression : certains modèles peuvent ne pas renvoyer les champs
+    // de pression malgré leur présence dans la requête. On récupère alors la
+    // pression depuis le flux horaire Open-Meteo standard et on l'aligne sur
+    // les mêmes heures.
+    const hasPressure = (arr) => Array.isArray(arr) && arr.some(v => Number.isFinite(Number(v)));
+    if (!hasPressure(h?.pressure_msl) && !hasPressure(h?.surface_pressure)) {
+      try {
+        const pressureUrl = `https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}&hourly=pressure_msl,surface_pressure&forecast_days=7&timezone=Europe%2FParis`;
+        const pressureRes = await fetch(pressureUrl);
+        if (pressureRes.ok) {
+          const pressureData = await pressureRes.json();
+          const ph = pressureData?.hourly;
+          if (ph && Array.isArray(ph.time)) {
+            const byTime = new Map(ph.time.map((t, j) => [t, {
+              msl: ph.pressure_msl?.[j],
+              surface: ph.surface_pressure?.[j]
+            }]));
+            h.pressure_msl = h.time.map((t, i) => {
+              const v = Number(byTime.get(t)?.msl);
+              return Number.isFinite(v) ? v : NaN;
+            });
+            h.surface_pressure = h.time.map((t, i) => {
+              const v = Number(byTime.get(t)?.surface);
+              return Number.isFinite(v) ? v : NaN;
+            });
+          }
+        }
+      } catch (pressureError) {
+        // Le widget reste fonctionnel même si le flux de secours est indisponible.
+      }
+    }
     const now = new Date();
     let idx = h.time.findIndex(t => new Date(t) >= now);
     if (idx === -1) idx = 0;
@@ -2288,12 +2332,55 @@ function mergeArome15MinIntoHourly(h, shortH, now) {
 
 async function loadModelData(modelName) { 
   const errEl = document.getElementById("arError"); 
-  const url = `https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}&hourly=temperature_2m,apparent_temperature,dew_point_2m,precipitation,precipitation_probability,weather_code,wind_speed_10m,wind_direction_10m,wind_gusts_10m,relative_humidity_2m,cloud_cover,cloud_cover_low,cloud_cover_mid,cloud_cover_high,surface_pressure,cape&models=${modelName}&forecast_days=7&timezone=Europe%2FParis`; 
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}&hourly=temperature_2m,apparent_temperature,dew_point_2m,precipitation,precipitation_probability,weather_code,wind_speed_10m,wind_direction_10m,wind_gusts_10m,relative_humidity_2m,cloud_cover,cloud_cover_low,cloud_cover_mid,cloud_cover_high,surface_pressure,pressure_msl,cape&models=${modelName}&forecast_days=7&timezone=Europe%2FParis`; 
   try { 
     const res = await fetch(url); 
     if (!res.ok) throw new Error(); 
     const data = await res.json(); 
     const h = data.hourly;
+
+    // PRESSION 24H : on utilise un flux Open-Meteo indépendant du modèle
+    // sélectionné. Certains modèles ne renvoient pas toujours pressure_msl.
+    // L'alignement se fait d'abord par l'heure exacte, puis par l'heure la plus proche.
+    try {
+      const pressureUrl = `https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}&hourly=pressure_msl,surface_pressure&forecast_days=7&timezone=Europe%2FParis`;
+      const pressureRes = await fetch(pressureUrl);
+      if (pressureRes.ok) {
+        const pressureData = await pressureRes.json();
+        const ph = pressureData?.hourly;
+        if (ph?.time?.length) {
+          const pressureMap = new Map(ph.time.map((t, j) => [
+            t,
+            Number(ph.pressure_msl?.[j] ?? ph.surface_pressure?.[j])
+          ]));
+          const pressureTimes = ph.time.map(t => new Date(t).getTime());
+          const pressureValues = ph.time.map((t, j) =>
+            Number(ph.pressure_msl?.[j] ?? ph.surface_pressure?.[j])
+          );
+
+          h.pressure_msl = (h.time || []).map((t, i) => {
+            const exact = Number(pressureMap.get(t));
+            if (Number.isFinite(exact)) return exact;
+
+            const target = new Date(t).getTime();
+            let best = -1, bestDiff = Infinity;
+            pressureTimes.forEach((ms, j) => {
+              const diff = Math.abs(ms - target);
+              if (diff < bestDiff) { bestDiff = diff; best = j; }
+            });
+            const nearest = best >= 0 ? pressureValues[best] : NaN;
+            return Number.isFinite(nearest) ? nearest : NaN;
+          });
+
+          // Toujours conserver un secours surface_pressure si disponible.
+          h.surface_pressure = h.pressure_msl.map((v, i) =>
+            Number.isFinite(Number(v)) ? Number(v) : Number(h.surface_pressure?.[i])
+          );
+        }
+      }
+    } catch (pressureError) {
+      console.warn('Pression 24h indisponible:', pressureError);
+    }
 
     // Visibilité multi-modèles pour le brouillard : ECMWF + ICON + GFS.
     // Ces modèles sont interrogés séparément puis alignés sur les heures AROME.
@@ -2699,11 +2786,6 @@ loadAll();
 setInterval(loadAll, 10 * 60 * 1000); 
 </script> 
 
-<div class="mf-rain-link-card">
-  <div class="mf-rain-link-title">🌧️ PLUIE DANS L’HEURE</div>
-  <div class="mf-rain-link-sub">Prévision officielle Météo-France pour Cherbourg</div>
-  <a class="mf-rain-link" href="https://www.lameteoagricole.net/meteo-minute-par-minute/Cherbourg-Octeville-50100.html" target="_blank" rel="noopener noreferrer">👉 Voir la pluie dans l’heure sur Météo-France</a>
-</div>
 </body> 
 </html>
 
@@ -2729,11 +2811,8 @@ setInterval(loadAll, 10 * 60 * 1000);
   .rain24-bar-value{font-size:7px}
   .rain24-point{width:5px;height:5px}
   .rain24-point-value{font-size:8px;transform:translateY(-6px)}
-  .rain24-wind-row,.rain24-dir-row{min-height:36px}
-  .rain24-wind-row .rain24-cell{padding:3px 0}
-  .rain24-value{font-size:9px}
-  .rain24-dir-row .rain24-cell{padding:4px 0}
-  .rain24-arrow{font-size:12px}
+  .rain24-wind-value{font-size:8px;transform:translate(-50%,-6px)}
+  .rain24-wind-arrow{font-size:9px}
 }
 @media (max-width:430px){
   .rain24-hours{grid-template-columns:54px repeat(24,minmax(0,1fr));padding:0}
