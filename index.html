@@ -39,29 +39,11 @@ body { margin: 0; font-family: system-ui, -apple-system, sans-serif; color: var(
 .top-controls { display: flex; justify-content: center; gap: 10px; margin-top: 10px; flex-wrap: wrap; } 
 
 /* Barre de navigation rapide optimisée en grille 2 lignes */
-.quick-nav {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 5px;
-  margin-top: 12px;
-}
-.nav-btn {
-  background: var(--card-bg);
-  border: 1px solid var(--card-border);
-  color: var(--text-color);
-  padding: 6px 4px;
-  border-radius: 10px;
-  font-size: 10px;
-  font-weight: bold;
-  cursor: pointer;
-  text-decoration: none;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 3px;
-  transition: background 0.2s, transform 0.1s;
-  text-align: center;
-}
+.quick-nav { display:flex; flex-direction:column; gap:6px; margin-top:12px; width:100%; }
+.quick-nav-row { display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); gap:5px; width:100%; }
+.quick-nav-row:nth-child(2) { grid-template-columns:repeat(5,minmax(0,1fr)); }
+.nav-btn { min-width:0; width:100%; box-sizing:border-box; background:var(--card-bg); border:1px solid var(--card-border); color:var(--text-color); padding:7px 3px; border-radius:10px; font-size:10px; font-weight:bold; cursor:pointer; text-decoration:none; display:inline-flex; align-items:center; justify-content:center; gap:4px; transition:background .2s,transform .1s; text-align:center; white-space:normal; line-height:1.1; }
+
 .nav-btn:hover {
   background: rgba(167, 124, 255, 0.25);
   border-color: #a77cff;
@@ -262,7 +244,6 @@ details[open] summary { margin-bottom: 12px; }
   .row { gap: 7px; } 
   .chart-scroll-wrapper { width: 100%; max-width: 100%; min-width: 0; overflow-x: auto; }
   .chart-inner-container { width: 2600px; min-width: 2600px; height: 480px; max-width: none; } 
-  .quick-nav { grid-template-columns: repeat(3, 1fr); }
 } 
 
 /* MODE ULTRA-COMPACT : lecture type widget, toutes les lignes visibles immédiatement */
@@ -483,9 +464,53 @@ details[open] summary { margin-bottom: 12px; }
   white-space:nowrap;
 }
 @media (max-width:600px){
-  .mf-rain-hour-mini{padding:8px 10px;gap:7px;}
+  .mf-rain-hour-mini{padding:7px 3px;gap:7px;}
   .mf-rain-hour-mini a{padding:6px 8px;font-size:11px;}
 }
+
+    .live-compact { padding-top:10px !important; padding-bottom:9px !important; }
+    .live-compact h2 { font-size:15px !important; margin-bottom:6px !important; }
+    .live-compact-grid { display:grid; grid-template-columns:1fr 1.35fr; gap:8px; align-items:center; }
+    .live-main-kpi { padding:8px 10px; border-radius:10px; background:rgba(255,255,255,.035); text-align:center; }
+    .live-main-temp { font-size:29px; line-height:1.05; font-weight:900; margin:3px 0; }
+    .live-main-temp .unit { font-size:13px; font-weight:600; }
+    .live-mini-kpis { display:grid; grid-template-columns:1fr 1fr; gap:5px 10px; }
+    .live-mini-kpis > div { display:flex; justify-content:space-between; align-items:center; gap:5px; font-size:10px; }
+    .live-mini-kpis strong { font-size:11px; white-space:nowrap; }
+    .summary24-compact { padding:8px 0 2px; }
+    .summary24-status { display:flex; align-items:center; gap:9px; min-height:38px; }
+    .summary24-weather-icon { font-size:29px; line-height:1; }
+    .summary24-status strong { display:block; font-size:14px; }
+    .summary24-status small { display:block; margin-top:2px; color:var(--subtext); font-size:10px; }
+    .summary24-kpis { display:grid; grid-template-columns:repeat(3,1fr); gap:5px; margin-top:8px; }
+    .summary24-kpis > div { padding:7px 4px; border-radius:9px; background:rgba(255,255,255,.035); text-align:center; }
+    .summary24-kpis span { display:block; font-size:9px; color:var(--subtext); }
+    .summary24-kpis strong { display:block; font-size:13px; margin-top:2px; }
+    .summary24-kpis small { display:block; font-size:8px; color:var(--subtext); margin-top:1px; }
+    .summary24-details-btn { width:100%; margin-top:7px; padding:8px 10px; border:1px solid var(--card-border); border-radius:9px; background:var(--panel); color:var(--text); font-weight:700; font-size:11px; cursor:pointer; }
+    @media (max-width:520px) {
+      .live-compact-grid { grid-template-columns:1fr 1.5fr; gap:6px; }
+      .live-main-kpi { padding:7px 6px; }
+      .live-main-temp { font-size:26px; }
+      .live-mini-kpis { gap:4px 7px; }
+      .summary24-status strong { font-size:13px; }
+      .summary24-kpis strong { font-size:12px; }
+    }
+
+    #dailySummaryContainer { display:grid !important; grid-template-columns:repeat(7,minmax(0,1fr)); gap:4px; width:100%; }
+    #dailySummaryContainer .trend-day-compact { box-sizing:border-box; overflow:hidden; }
+    #trendDetailsBtn { appearance:none; }
+    #trendOriginalDetails { display:none; overflow-x:auto !important; overflow-y:hidden !important; flex-wrap:nowrap !important; width:100%; box-sizing:border-box; gap:8px; -webkit-overflow-scrolling:touch; scrollbar-width:thin; }
+    #trendOriginalDetails .hour { flex:0 0 165px !important; box-sizing:border-box; }
+    #modelFuture7d { display:none; overflow-x:auto; gap:6px; }
+    #modelFuture7d .hour { flex:0 0 115px; }
+    @media (max-width:520px) {
+      #dailySummaryContainer { gap:3px; }
+      #dailySummaryContainer .trend-day-compact { padding:6px 1px !important; }
+      #dailySummaryContainer .trend-day-compact > div:first-child { font-size:9px !important; }
+      #dailySummaryContainer .trend-day-compact .weather-icon { font-size:21px; }
+    }
+
 </style> 
 
 <style id="mf-rain-button-style">
@@ -495,12 +520,76 @@ details[open] summary { margin-bottom: 12px; }
 .mf-rain-link{display:inline-block;padding:12px 18px;border-radius:12px;background:#2f80ed;color:#fff!important;text-decoration:none!important;font-weight:900;}
 .mf-rain-link:active{transform:scale(.98);}
 </style>
+
+<style id="compact-home-v2">
+  .live-compact { padding:8px 10px !important; }
+  .live-compact h2 { font-size:14px !important; }
+  .live-compact-grid { grid-template-columns:0.9fr 1.5fr; gap:6px; }
+  .live-main-kpi { padding:6px 8px; }
+  .live-main-temp { font-size:25px; margin:2px 0; }
+  .live-main-temp .unit { font-size:11px; }
+  .live-mini-kpis { gap:3px 7px; }
+  .live-mini-kpis > div { font-size:9px; }
+  .live-mini-kpis strong { font-size:10px; }
+  .vigilance-grid { display:grid; grid-template-columns:1fr 1fr; gap:4px; }
+  .vigilance-item { padding:4px 6px; border-radius:7px; background:rgba(255,255,255,.035); text-align:center; }
+  .vigilance-day { font-size:8px; color:var(--subtext); margin-bottom:1px; }
+  .vigilance-value { font-size:10px; font-weight:800; line-height:1.1; }
+  #card-vigilance { padding-top:5px; padding-bottom:5px; margin-bottom:7px; }
+  .top-vigilance h2 { font-size:11px !important; margin-bottom:4px !important; }
+  .rain24-compact-card h2 { white-space:nowrap; font-size:14px !important; }
+  @media (max-width:520px) {
+    .rain24-compact-card h2 { font-size:12px !important; letter-spacing:-.15px; }
+  }
+  @media (max-width:520px) {
+    .live-compact-grid { grid-template-columns:0.85fr 1.55fr; }
+    .live-main-temp { font-size:23px; }
+    .live-main-kpi .label { font-size:9px; }
+  }
+</style>
+
+<style id="compact-top-v3">
+  .header { margin-bottom: 9px !important; }
+  .title-row { display:flex; align-items:center; justify-content:center; gap:7px; width:100%; }
+  .title-row h1 { flex:1 1 auto; min-width:0; }
+  @media (max-width:520px) {
+    .title-row { gap:4px; }
+  }
+  .header h1 { font-size: 18px !important; line-height: 1.15 !important; margin: 2px 0 !important; }
+  .header .subtitle { font-size: 10px !important; margin: 2px 0 !important; }
+  .top-controls { display:flex !important; flex-wrap:nowrap !important; align-items:stretch !important; justify-content:stretch !important; gap:7px !important; margin-top:6px !important; }
+  .top-controls .select-spot { flex:1 1 auto !important; min-width:0 !important; width:auto !important; }
+  .top-controls .theme-btn { flex:0 0 auto !important; white-space:nowrap !important; }
+  .live-sun-strip { display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-top:6px; padding-top:6px; border-top:1px solid var(--card-border); }
+  .live-sun-item { display:flex; align-items:center; justify-content:space-between; gap:6px; padding:5px 8px; background:rgba(255,255,255,.035); border-radius:8px; }
+  .live-sun-item .label { font-size:9px !important; }
+  .live-sun-item .value { font-size:13px !important; margin:0 !important; }
+  @media (max-width:520px) {
+    .header .subtitle { display:none !important; }
+    .header h1 { font-size:17px !important; }
+    .top-controls .select-spot, .top-controls .theme-btn { padding:6px 9px !important; font-size:11px !important; }
+  }
+</style>
+
+
+<style id="compact-first-screen-v1">
+  /* Gagner juste assez de hauteur pour faire apparaître le résumé 7 jours dès l'ouverture */
+  .live-compact { padding-top:6px !important; padding-bottom:6px !important; }
+  .live-sun-strip { margin-top:4px !important; padding-top:4px !important; }
+  .live-sun-item { padding-top:4px !important; padding-bottom:4px !important; }
+  .rain24-compact-card { padding-top:7px !important; padding-bottom:7px !important; margin-bottom:6px !important; }
+  .rain24-compact-card h2 { margin-bottom:4px !important; }
+  .summary24-compact { margin-top:0 !important; }
+  .summary24-details-btn { margin-top:4px !important; padding-top:6px !important; padding-bottom:6px !important; }
+</style>
 </head> 
 <body> 
 <div class="container"> 
   <!-- HEADER --> 
   <div class="header"> 
-    <h1 id="mainTitle"> 🌦️ Météo Cherbourg — Rue Marie Ernestine Serret </h1> 
+    <div class="title-row">
+      <h1 id="mainTitle">🌦️ Météo Cherbourg — Rue Marie Ernestine Serret</h1>
+    </div>
     <div class="subtitle" id="mainSubtitle"> Comparateur de Modèles Météo & Station Réelle</div> 
     
     <div class="top-controls"> 
@@ -515,18 +604,40 @@ details[open] summary { margin-bottom: 12px; }
     </div> 
 
     <!-- Barre de navigation rapide optimisée -->
-    <nav class="quick-nav">
-      <a href="#card-direct" class="nav-btn">👁️ Direct</a>
-      <a href="#card-synthese" class="nav-btn">🔎 Synthèse</a>
-      <a href="#card-activites" class="nav-btn">🎯 Activités</a>
-      <a href="#card-radar" class="nav-btn">🌧️ Radar</a>
-      <a href="#card-modele" class="nav-btn">🤖 Modèle</a>
-      <a href="#card-comparateur" class="nav-btn">📈 Comparateur</a>
-      <a href="#card-alertes" class="nav-btn">⚙️ Alertes</a>
+    <nav class="quick-nav" aria-label="Navigation rapide">
+      <div class="quick-nav-row">
+        <a href="#card-synthese" class="nav-btn">🔎 Synthèse</a>
+        <a href="#card-activites" class="nav-btn">🎯 Activités</a>
+        <a href="#card-radar" class="nav-btn">🌧️ Radar</a>
+        <a href="#card-modele" class="nav-btn">🤖 Modèle</a>
+        <a href="#card-comparateur" class="nav-btn">📈 Comparateur</a>
+        <a href="#card-alertes" class="nav-btn">⚙️ Alertes</a>
+      </div>
+      <div class="quick-nav-row">
+        <a href="#card-marine" class="nav-btn">🌊 Marine</a>
+        <a href="#card-soleil-lune" class="nav-btn">🌙 Soleil/Lune</a>
+        <a href="#card-marees" class="nav-btn">🌊 Marées</a>
+        <a href="#card-air" class="nav-btn">🌬️ Qualité de l’air</a>
+        <a href="#card-historique" class="nav-btn">📊 Historique</a>
+      </div>
     </nav>
 
-    <div class="status" id="status"> ⏳ Chargement... </div> 
   </div> 
+
+  <!-- VIGILANCE MÉTÉO PRIORITAIRE : AUJOURD'HUI & DEMAIN -->
+  <div class="card vigilance-compact top-vigilance" id="card-vigilance" style="border-left:4px solid #f1c40f;">
+    <h2 style="margin-bottom:7px;">⚠️ VIGILANCE MÉTÉO</h2>
+    <div class="vigilance-grid">
+      <div class="vigilance-item">
+        <div class="vigilance-day">Aujourd'hui</div>
+        <div class="vigilance-value" id="topVigToday">🟢 Vert (Normal)</div>
+      </div>
+      <div class="vigilance-item">
+        <div class="vigilance-day">Demain</div>
+        <div class="vigilance-value" id="topVigTomorrow">🟢 Vert (Normal)</div>
+      </div>
+    </div>
+  </div>
 
   <!-- WIDGET STATION INFOCLIMAT — PORT CHANTEREYNE -->
   <div class="card" id="portChantereyneWidget" style="display:none; border-left:4px solid #3498db;">
@@ -539,28 +650,31 @@ details[open] summary { margin-bottom: 12px; }
     </div>
   </div>
 
-  <!-- VUE D'ENSEMBLE EN DIRECT -->
-  <div class="card real" id="card-direct" style="border-left: 4px solid #45d6ff;">
-    <h2> 👁️ VUE D'ENSEMBLE EN DIRECT </h2>
-    <div class="grid-2">
-      <div class="compareBox" style="text-align:center; padding:16px;">
-        <div class="label"> TEMPÉRATURE ACTUELLE </div>
-        <div class="big" style="font-size:36px; margin:6px 0;"> <span id="topLiveTemp">--</span> <span class="unit">°C</span> </div>
-        <div class="label" id="topLiveFeel" style="margin-bottom:6px;">Ressenti --°C</div>
-        <!-- Jauge de confort thermique visuelle -->
-        <div style="width:100%; height:6px; background:rgba(255,255,255,0.1); border-radius:4px; overflow:hidden;">
-          <div id="thermalBar" style="width:50%; height:100%; background:linear-gradient(90deg, #3498db, #2ecc71, #f1c40f, #e74c3c); border-radius:4px;"></div>
-        </div>
+  <!-- VUE D'ENSEMBLE EN DIRECT : ULTRA COMPACTE -->
+  <div class="card real live-compact" id="card-direct" style="border-left: 4px solid #45d6ff;">
+    <h2 style="margin-bottom:5px;"> 👁️ VUE D'ENSEMBLE EN DIRECT </h2>
+    <div class="live-compact-grid">
+      <div class="live-main-kpi">
+        <div class="label">🌡️ TEMPÉRATURE</div>
+        <div class="live-main-temp"><span id="topLiveTemp">--</span><span class="unit">°C</span></div>
+        <div class="label" id="topLiveFeel">Ressenti --°C</div>
       </div>
-      <div class="compareBox" style="display:flex; flex-direction:column; justify-content:center; gap:6px;">
-        <div style="display:flex; justify-content:space-between;"><span class="label">💧 Humidité</span><span id="topLiveHum" class="value">--</span></div>
-        <div style="display:flex; justify-content:space-between;"><span class="label">💨 Vent</span><span id="topLiveWind" class="value">--</span></div>
-        <div style="display:flex; justify-content:space-between;"><span class="label">⚡ Rafales</span><span id="topLiveGust" class="value">--</span></div>
-        <div style="display:flex; justify-content:space-between;"><span class="label">🌧️ Pluie (1h)</span><span id="topLiveRain" class="value">--</span></div>
+      <div class="live-mini-kpis">
+        <div><span class="label">💧 Humidité</span><strong id="topLiveHum">--</strong></div>
+        <div><span class="label">💨 Vent</span><strong id="topLiveWind">--</strong></div>
+        <div><span class="label">⚡ Rafales</span><strong id="topLiveGust">--</strong></div>
+        <div><span class="label">🌧️ Pluie 1h</span><strong id="topLiveRain">--</strong></div>
       </div>
     </div>
+    <div style="width:100%; height:3px; margin-top:5px; background:rgba(255,255,255,0.1); border-radius:4px; overflow:hidden;">
+      <div id="thermalBar" style="width:50%; height:100%; background:linear-gradient(90deg, #3498db, #2ecc71, #f1c40f, #e74c3c); border-radius:4px;"></div>
+    </div>
+    <div class="live-sun-strip" aria-label="Horaires du soleil">
+      <div class="live-sun-item"><span class="label">🌅 Lever</span><span class="value" id="sunRise">--</span></div>
+      <div class="live-sun-item"><span class="label">🌇 Coucher</span><span class="value" id="sunSet">--</span></div>
+    </div>
 
-    <div id="maupertusStationPanel" style="display:none; margin-top:10px;">
+    <div id="maupertusStationPanel" style="display:none; margin-top:8px;">
       <div class="compareBox" style="padding:10px;">
         <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:8px;">
           <div>
@@ -582,18 +696,41 @@ details[open] summary { margin-bottom: 12px; }
       </div>
     </div>
 
-    <div style="margin-top:10px; display:flex; justify-content:space-between; font-size:11px; color:var(--subtext);">
+    <div style="margin-top:6px; display:flex; justify-content:space-between; align-items:center; gap:8px; font-size:10px; color:var(--subtext);">
       <span id="topLiveTime">Dernière mesure : --</span>
-      <span>Source : Temps réel & Modèle</span>
+      <span>🟢 <span id="liveUpdateStatus">Actualisé</span></span>
     </div>
   </div>
 
-  <!-- WIDGET 24 HEURES -->
-  <div class="card model-summary" id="card-synthese">
-    <div id="summaryTimeline" class="rain24-wrap">
+  <!-- PLUIE PROCHAINES 24 HEURES : VUE RAPIDE + DÉTAILS SUR DEMANDE -->
+  <div class="card model-summary rain24-compact-card" id="card-synthese">
+    <h2 style="margin-bottom:6px;">🌧️ VA-T-IL PLEUVOIR DANS LES PROCHAINES 24 HEURES ?</h2>
+    <div id="summary24Compact" class="summary24-compact">
+      <div class="summary24-status"><span class="summary24-weather-icon">☀️</span><div><strong>Analyse en cours…</strong><small>🛰️ AROME HD + AROME court terme</small></div></div>
+      <div class="summary24-kpis">
+        <div><span>🌡️ Température</span><strong id="summaryTemp">--</strong><small>min / max</small></div>
+        <div><span>🌧️ Pluie</span><strong id="summaryRain">--</strong><small>sur 24h</small></div>
+        <div><span>💨 Rafale</span><strong id="summaryGust">--</strong><small>max prévue</small></div>
+      </div>
+    </div>
+    <button id="summary24DetailsBtn" type="button" onclick="toggleSummary24Details()" class="summary24-details-btn">▼ Voir les détails des prochaines 24 h</button>
+    <div id="summaryTimeline" class="rain24-wrap" style="display:none; margin-top:9px;">
       Chargement de la prévision détaillée...
     </div>
   </div>
+
+  <!-- RÉSUMÉ JOUR PAR JOUR (TENDANCE 7 JOURS AVEC TRANCHES & SPARKLINE) --> 
+  <div class="card model-summary" style="border-left-color: #00cec9;"> 
+    <h2> 📅 RÉSUMÉ JOUR PAR JOUR (TENDANCE 7 JOURS) </h2> 
+    <div class="model-source" style="margin-top:-6px; margin-bottom:8px;">🔵 Source prioritaire : ECMWF • tendance moyenne échéance</div>
+    <div id="dailySummaryContainer" class="forecast" style="overflow:hidden;"> 
+      Chargement du résumé journalier... 
+    </div>
+    <button id="trendDetailsBtn" type="button" onclick="toggleTrendDetails()" style="width:100%; margin-top:9px; padding:9px 12px; border:1px solid var(--card-border); border-radius:9px; background:var(--panel); color:var(--text); font-weight:700; font-size:12px; cursor:pointer;">▼ Voir les données détaillées jour par jour</button>
+    <div id="trendOriginalDetails" class="forecast" style="display:none; overflow-x:auto; overflow-y:hidden; margin-top:9px; flex-wrap:nowrap;">
+      Chargement des données détaillées...
+    </div>
+  </div> 
 
   <!-- ACTIVITÉS EXTÉRIEURES : CRÉNEAUX FAVORABLES -->
   <div class="card" id="card-activites" style="border-left:4px solid #3498db;">
@@ -619,15 +756,6 @@ details[open] summary { margin-bottom: 12px; }
       </div>
     </div>
   </div>
-
-  <!-- RÉSUMÉ JOUR PAR JOUR (TENDANCE 7 JOURS AVEC TRANCHES & SPARKLINE) --> 
-  <div class="card model-summary" style="border-left-color: #00cec9;"> 
-    <h2> 📅 RÉSUMÉ JOUR PAR JOUR (TENDANCE 7 JOURS) </h2> 
-    <div class="model-source" style="margin-top:-6px; margin-bottom:8px;">🔵 Source prioritaire : ECMWF • tendance moyenne échéance</div>
-    <div id="dailySummaryContainer" class="forecast" style="overflow-x:auto;"> 
-      Chargement du résumé journalier... 
-    </div> 
-  </div> 
 
   <!-- MODÈLE PRÉVISIONNEL --> 
   <div class="card model-arome" id="card-modele"> 
@@ -687,7 +815,8 @@ details[open] summary { margin-bottom: 12px; }
       <div id="modelFuture48" class="forecast forecast-48h"> Chargement... </div> 
       <div class="label" style="margin-top:12px;margin-bottom:2px;"> 📅 TENDANCE SUR 7 JOURS (PAS DE 3H) </div> 
       <div class="model-source" style="margin:0 0 6px 0;">🔵 ECMWF • tendance indépendante du modèle sélectionné</div>
-      <div id="modelFuture7d" class="forecast"> Chargement... </div> 
+      <button id="trend7dBtn" type="button" onclick="toggleTrend7d()" style="width:100%; margin-top:4px; padding:9px 12px; border:1px solid var(--card-border); border-radius:9px; background:var(--panel); color:var(--text); font-weight:700; font-size:12px; cursor:pointer;">▼ Voir les prévisions détaillées sur 7 jours (pas de 3h)</button>
+      <div id="modelFuture7d" class="forecast" style="display:none; margin-top:6px;"> Chargement... </div> 
     </div> 
     <div class="warning" id="arError" style="margin-top:8px;"> </div> 
   </div> 
@@ -749,7 +878,7 @@ details[open] summary { margin-bottom: 12px; }
   </div>
 
   <!-- BLOCS SECONDAIRES MASQUÉS DANS DES ACCORDÉONS POUR ALLÉGER LA PAGE -->
-  <details class="card model-air">
+  <details class="card model-air" id="card-air">
     <summary>🍃 Qualité de l'Air, Pollens & UV</summary>
     <div style="margin-top:12px;">
       <div class="grid-2" style="margin-bottom:10px;"> 
@@ -779,25 +908,15 @@ details[open] summary { margin-bottom: 12px; }
     </div>
   </details>
 
-  <details class="card model-sun-moon">
+  <details class="card model-sun-moon" id="card-soleil-lune">
     <summary>☀️ Soleil & 🌙 Lune</summary>
     <div style="margin-top:12px;">
-      <div class="grid-2" style="margin-bottom:12px;"> 
-        <div class="compareBox"> 
-          <div class="label"> 🌅 LEVER DU SOLEIL </div> 
-          <div class="value" id="sunRise" style="font-size:16px;margin-top:4px;"> -- </div> 
-        </div> 
-        <div class="compareBox"> 
-          <div class="label"> 🌇 COUCHER DU SOLEIL </div> 
-          <div class="value" id="sunSet" style="font-size:16px;margin-top:4px;"> -- </div> 
-        </div> 
-      </div> 
       <div class="label" style="margin-bottom:6px;"> PHASES LUNAIRES </div> 
       <div id="moonForecast" class="forecast"> </div> 
     </div>
   </details>
 
-  <details class="card model-history">
+  <details class="card model-history" id="card-historique">
     <summary>📊 Historique Fiable & Archives</summary>
     <div style="margin-top:12px;">
       <div class="label" style="margin-bottom:6px;"> DERNIÈRES 24 HEURES PASSÉES (OBSERVATIONS) </div> 
@@ -808,7 +927,7 @@ details[open] summary { margin-bottom: 12px; }
   </details>
 
   <!-- MARÉES & MARINE --> 
-  <div class="card model-tide"> 
+  <div class="card model-tide" id="card-marees"> 
     <h2> 🌊 MARÉES (Port de Cherbourg) </h2> 
     <div style="text-align: center; padding: 10px;"> 
       <div style="font-size: 13px; color: var(--subtext); margin-bottom: 12px;"> 
@@ -820,7 +939,7 @@ details[open] summary { margin-bottom: 12px; }
     </div> 
   </div> 
 
-  <div class="card model-marine" style="border-left: 4px solid #0984e3;"> 
+  <div class="card model-marine" id="card-marine" style="border-left: 4px solid #0984e3;"> 
     <h2> 🌬️ MÉTÉO MARINE & TABLEAU WINDY </h2> 
     <div class="compareBox" style="padding: 6px;"> 
       <div class="label" style="margin-bottom: 8px; padding-left: 4px;"> PRÉVISIONS WAVES & VENTS (WINDY) </div> 
@@ -899,7 +1018,10 @@ function switchModel(openMeteoModelName, titleText, btnElement) {
     openMeteoModelName.includes('arome')
       ? 'AROME HD • 15 min prioritaire sur +6 h • puis échéance horaire'
       : `${currentModelLabel} • échéance horaire • prévision locale`; 
-  loadModelData(currentOpenMeteoModel); 
+  // Le modèle sélectionné ne touche JAMAIS au bloc des prochaines 24 h.
+  loadModelData(currentOpenMeteoModel, { update24h: false });
+  // Une source dédiée AROME alimente systématiquement les prochaines 24 h.
+  loadModelData('meteofrance_arome_france_hd', { update24h: true, updateModelPanel: false });
 } 
 
 function switchCompareMetric(metric, labelText, btnElement) { 
@@ -1342,14 +1464,14 @@ function updateShortTermSummary(h, idx) {
     const dateObj = new Date(h.time[i]);
     const item = {
       date: dateObj,
-      temp: Number(h.temperature_2m?.[i] ?? 0),
-      rain: Number(h.precipitation?.[i] ?? 0),
-      risk: Number(h.precipitation_probability?.[i] ?? 0),
+      temp: Number(h.temperature_2m?.[i] ?? NaN),
+      rain: Number(h.precipitation?.[i] ?? NaN),
+      risk: Number(h.precipitation_probability?.[i] ?? NaN),
       cloud: effectiveCloud(h.cloud_cover?.[i], h.cloud_cover_low?.[i], h.cloud_cover_mid?.[i], h.cloud_cover_high?.[i]),
       humidity: Number(h.relative_humidity_2m?.[i] ?? 0),
       dew: Number(h.dew_point_2m?.[i] ?? NaN),
-      wind: Number(h.wind_speed_10m?.[i] ?? 0),
-      gust: Number(h.wind_gusts_10m?.[i] ?? 0),
+      wind: Number(h.wind_speed_10m?.[i] ?? NaN),
+      gust: Number(h.wind_gusts_10m?.[i] ?? NaN),
       windDir: Number(h.wind_direction_10m?.[i] ?? 0),
       pressure: Number(h.pressure_msl?.[i] ?? h.surface_pressure?.[i] ?? NaN),
       code: h.weather_code?.[i],
@@ -1369,7 +1491,33 @@ function updateShortTermSummary(h, idx) {
     };
     hours.push(item);
 
-    if (!isNaN(item.temp)) { minTemp = Math.min(minTemp, item.temp); maxTemp = Math.max(maxTemp, item.temp); }
+    if (Number.isFinite(item.temp)) {
+      // Certains flux AROME peuvent renvoyer 0°C comme valeur de remplissage
+      // sur une échéance manquante. Pour éviter qu'un faux 0 devienne le minimum
+      // des 24 h, on l'écarte lorsqu'il est manifestement incohérent avec les
+      // températures disponibles autour de cette échéance.
+      let validTemp = true;
+      if (item.temp === 0) {
+        const neighbours = [];
+        for (let d = 1; d <= 4; d++) {
+          const before = Number(h.temperature_2m?.[i - d]);
+          const after = Number(h.temperature_2m?.[i + d]);
+          if (Number.isFinite(before)) neighbours.push(before);
+          if (Number.isFinite(after)) neighbours.push(after);
+        }
+        const positiveNeighbours = neighbours.filter(v => v > 3).length;
+        const liveTempCandidate = Number(h.temperature_2m?.[idx]);
+        // Si les températures voisines sont nettement positives, un 0 isolé
+        // est considéré comme une valeur manquante et non comme une vraie prévision.
+        if (positiveNeighbours >= 2 && Number.isFinite(liveTempCandidate) && liveTempCandidate > 3) {
+          validTemp = false;
+        }
+      }
+      if (validTemp) {
+        minTemp = Math.min(minTemp, item.temp);
+        maxTemp = Math.max(maxTemp, item.temp);
+      }
+    }
     if (!isNaN(item.rain)) totalRain += item.rain;
     if (!isNaN(item.risk) && item.risk > maxRainProb) {
       maxRainProb = item.risk;
@@ -1391,7 +1539,7 @@ function updateShortTermSummary(h, idx) {
   else sentence = "🌤️ Les conditions s'annoncent globalement calmes sur les 24 prochaines heures.";
 
   // Synthèse textuelle supprimée : le widget 24h est désormais affiché directement.
-  const el_summaryTemp = document.getElementById("summaryTemp"); if (el_summaryTemp) el_summaryTemp.textContent = `${num(minTemp,0)}°C / ${num(maxTemp,0)}°C`;
+  const el_summaryTemp = document.getElementById("summaryTemp"); if (el_summaryTemp) el_summaryTemp.textContent = `${Number.isFinite(minTemp) ? num(minTemp,0) + "°C" : "--"} / ${Number.isFinite(maxTemp) ? num(maxTemp,0) + "°C" : "--"}`;
   const el_summaryGust = document.getElementById("summaryGust"); if (el_summaryGust) el_summaryGust.textContent = `${num(maxGust,0)} km/h à ${maxGustHour}`;
   const el_summaryRain = document.getElementById("summaryRain"); if (el_summaryRain) el_summaryRain.textContent = `${num(totalRain,1)} mm`;
   const el_summaryRainProb = document.getElementById("summaryRainProb"); if (el_summaryRainProb) el_summaryRainProb.textContent = `${Math.round(maxRainProb)}% à ${maxRainProbHour}`;
@@ -1592,6 +1740,35 @@ function updateShortTermSummary(h, idx) {
   const windScale = Math.max(20, ...hours.map(x => x.wind));
   const gustScale = Math.max(35, ...hours.map(x => x.gust));
 
+  // Vue compacte visible immédiatement : statut pluie + cumul + rafale.
+  // Sécurité : ne jamais afficher 0°C comme minimum si une valeur météo est absente.
+  if (!Number.isFinite(minTemp)) minTemp = NaN;
+  if (!Number.isFinite(maxTemp)) maxTemp = NaN;
+
+  const compact = document.getElementById("summary24Compact");
+  if (compact) {
+    const rainThreshold = 0.1;
+    const rainHours = hours.filter(x => Number.isFinite(x.rain) && x.rain >= rainThreshold);
+    const firstRain = rainHours.length ? rainHours[0].date : null;
+    const lastRain = rainHours.length ? rainHours[rainHours.length - 1].date : null;
+    const statusIcon = totalRain >= rainThreshold ? "🌧️" : "☀️";
+    const statusText = totalRain >= rainThreshold
+      ? `Oui, pluie prévue${firstRain ? ` vers ${firstRain.getHours().toString().padStart(2,'0')}h` : ''}`
+      : "Non, pas de pluie significative prévue";
+    const statusSub = totalRain >= rainThreshold
+      ? `${firstRain && lastRain ? `Épisode(s) entre ${firstRain.getHours().toString().padStart(2,'0')}h et ${lastRain.getHours().toString().padStart(2,'0')}h` : 'Sur les prochaines 24 h'}`
+      : "Conditions globalement sèches sur les prochaines 24 h";
+    compact.querySelector('.summary24-weather-icon').textContent = statusIcon;
+    compact.querySelector('.summary24-status strong').textContent = statusText;
+    compact.querySelector('.summary24-status small').textContent = statusSub;
+    const tempEl = document.getElementById('summaryTemp');
+    const rainEl = document.getElementById('summaryRain');
+    const gustEl = document.getElementById('summaryGust');
+    if (tempEl) { tempEl.textContent = `${Number.isFinite(minTemp) ? num(minTemp,0) + '°' : '--'} / ${Number.isFinite(maxTemp) ? num(maxTemp,0) + '°' : '--'}`; tempEl.nextElementSibling.textContent = 'min / max'; }
+    if (rainEl) rainEl.textContent = `${num(totalRain,1)} mm`;
+    if (gustEl) { gustEl.textContent = `${num(maxGust,0)} km/h`; gustEl.nextElementSibling.textContent = maxGustHour !== '--' ? `à ${maxGustHour}` : 'max prévue'; }
+  }
+
   const timelineContainer = document.getElementById("summaryTimeline");
   timelineContainer.innerHTML = `
     <div class="rain24-head">
@@ -1678,9 +1855,107 @@ function updateShortTermSummary(h, idx) {
     </div>
   `;
 }
-// --- MISE À JOUR MAJEURE : RÉSUMÉ 7 JOURS AVEC TRANCHES MATIN/APM/SOIR, SPARKLINE PLUIE & RAFALES ET HEURES EN DESSOUS ---
-function updateDailySummary(h) { 
-  const container = document.getElementById("dailySummaryContainer"); 
+// --- TENDANCE 7 JOURS : VUE COMPACTE POUR LECTURE RAPIDE ---
+function updateDailySummary(h) {
+  const container = document.getElementById("dailySummaryContainer");
+  if (!container || !h || !h.time) return;
+  container.innerHTML = "";
+  const dailyData = {};
+
+  for (let i = 0; i < h.time.length; i++) {
+    const dayKey = h.time[i].split('T')[0];
+    const temp = Number(h.temperature_2m?.[i]);
+    const rain = Number(h.precipitation?.[i] ?? 0);
+    const gust = Number(h.wind_gusts_10m?.[i] ?? 0);
+    const code = h.weather_code?.[i];
+    const dateObj = new Date(h.time[i]);
+    if (!dailyData[dayKey]) dailyData[dayKey] = {
+      dateObj, minTemp: Infinity, maxTemp: -Infinity, totalRain: 0, maxGust: 0, maxGustHour: "--",
+      morningCode: null, morningCloud: null, morningRain: null,
+      afternoonCode: null, afternoonCloud: null, afternoonRain: null,
+      code
+    };
+    const d = dailyData[dayKey];
+    if (Number.isFinite(temp)) {
+      d.minTemp = Math.min(d.minTemp, temp);
+      d.maxTemp = Math.max(d.maxTemp, temp);
+    }
+    if (Number.isFinite(rain)) d.totalRain += rain;
+    if (Number.isFinite(gust) && gust > d.maxGust) {
+      d.maxGust = gust;
+      d.maxGustHour = dateObj.getHours().toString().padStart(2,'0') + "h";
+    }
+    const hour = dateObj.getHours();
+    // Deux pictogrammes distincts dans la tendance 7 jours : matin et après-midi.
+    // On privilégie 09h pour le matin et 15h pour l'après-midi, avec une tolérance
+    // sur les horaires voisins si l'échéance exacte n'est pas disponible.
+    if (hour >= 6 && hour <= 11) {
+      const distance = Math.abs(hour - 9);
+      const currentDistance = d.morningDistance ?? Infinity;
+      if (distance < currentDistance) {
+        d.morningDistance = distance;
+        d.morningCode = code;
+        d.morningTemp = temp;
+        d.morningCloud = effectiveCloud(h.cloud_cover?.[i], h.cloud_cover_low?.[i], h.cloud_cover_mid?.[i], h.cloud_cover_high?.[i]);
+        d.morningRain = h.precipitation?.[i];
+      }
+    }
+    if (hour >= 12 && hour <= 18) {
+      const distance = Math.abs(hour - 15);
+      const currentDistance = d.afternoonDistance ?? Infinity;
+      if (distance < currentDistance) {
+        d.afternoonDistance = distance;
+        d.afternoonCode = code;
+        d.afternoonTemp = temp;
+        d.afternoonCloud = effectiveCloud(h.cloud_cover?.[i], h.cloud_cover_low?.[i], h.cloud_cover_mid?.[i], h.cloud_cover_high?.[i]);
+        d.afternoonRain = h.precipitation?.[i];
+      }
+      if ([12,13,14,15].includes(hour)) d.code = code;
+    }
+  }
+
+  Object.keys(dailyData).slice(0,7).forEach((dayKey) => {
+    const d = dailyData[dayKey];
+    const dayName = d.dateObj.toLocaleDateString("fr-FR", {weekday:'short'}).replace('.', '');
+    const dateNum = d.dateObj.getDate();
+    const iconMorning = weatherIcon(d.morningCode, d.morningCloud, d.morningRain, false);
+    const iconAfternoon = weatherIcon(d.afternoonCode, d.afternoonCloud, d.afternoonRain, false);
+    const morningTempTxt = Number.isFinite(d.morningTemp) ? num(d.morningTemp,0) + '°' : '--';
+    const afternoonTempTxt = Number.isFinite(d.afternoonTemp) ? num(d.afternoonTemp,0) + '°' : '--';
+    const gustStyle = getGustStyle(d.maxGust);
+    const minTxt = Number.isFinite(d.minTemp) ? num(d.minTemp,0) + '°' : '--';
+    const maxTxt = Number.isFinite(d.maxTemp) ? num(d.maxTemp,0) + '°' : '--';
+    const rainTxt = Number.isFinite(d.totalRain) ? num(d.totalRain,1) : '--';
+    const gustTxt = Number.isFinite(d.maxGust) ? num(d.maxGust,0) : '--';
+
+    container.innerHTML += `
+      <div class="trend-day-compact" style="min-width:0; text-align:center; padding:7px 3px; border:1px solid var(--card-border); border-radius:9px; background:rgba(255,255,255,0.025);">
+        <div style="font-size:10px; font-weight:800; text-transform:capitalize; white-space:nowrap;">${dayName} ${dateNum}</div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:2px; margin:3px 0 2px;">
+          <div>
+            <div style="font-size:7px; color:var(--subtext); line-height:1;">MATIN</div>
+            <div class="weather-icon" style="font-size:20px; line-height:1.15;">${iconMorning}</div>
+            <div style="font-size:10px; font-weight:800; line-height:1.1;">${morningTempTxt}</div>
+          </div>
+          <div>
+            <div style="font-size:7px; color:var(--subtext); line-height:1;">A-MIDI</div>
+            <div class="weather-icon" style="font-size:20px; line-height:1.15;">${iconAfternoon}</div>
+            <div style="font-size:10px; font-weight:800; line-height:1.1;">${afternoonTempTxt}</div>
+          </div>
+        </div>
+        <div style="font-size:9px; margin-top:4px; color:#70cfff; white-space:nowrap;">🌧️ ${rainTxt} mm</div>
+        <div style="font-size:9px; margin-top:3px; white-space:nowrap; ${gustStyle}">💨 ${gustTxt} km/h</div>
+      </div>`;
+  });
+
+  // Les données détaillées d'origine restent disponibles via le bouton,
+  // tandis que la tendance 7 jours à pas de 3h du modèle reste inchangée.
+  renderOriginalDailyDetails(h);
+}
+
+// --- DONNÉES DÉTAILLÉES JOUR PAR JOUR (AFFICHÉES SUR DEMANDE) ---
+function renderOriginalDailyDetails(h) { 
+  const container = document.getElementById("trendOriginalDetails"); 
   if (!container || !h || !h.time) return; 
   container.innerHTML = ""; 
   const dailyData = {}; 
@@ -1837,6 +2112,37 @@ function updateDailySummary(h) {
     `; 
   }); 
 } 
+
+
+function toggleSummary24Details() {
+  const details = document.getElementById('summaryTimeline');
+  const btn = document.getElementById('summary24DetailsBtn');
+  if (!details || !btn) return;
+  const open = details.style.display !== 'none';
+  details.style.display = open ? 'none' : 'block';
+  btn.textContent = open ? '▼ Voir les détails des prochaines 24 h' : '▲ Masquer les détails des prochaines 24 h';
+  if (!open) setTimeout(() => details.scrollIntoView({behavior:'smooth', block:'nearest'}), 50);
+}
+
+function toggleTrendDetails() {
+  const details = document.getElementById('trendOriginalDetails');
+  const btn = document.getElementById('trendDetailsBtn');
+  if (!details || !btn) return;
+  const open = details.style.display !== 'none';
+  details.style.display = open ? 'none' : 'flex';
+  btn.textContent = open ? '▼ Voir les données détaillées jour par jour' : '▲ Masquer les données détaillées';
+  if (!open) setTimeout(() => details.scrollIntoView({behavior:'smooth', block:'nearest'}), 50);
+}
+
+function toggleTrend7d() {
+  const details = document.getElementById('modelFuture7d');
+  const btn = document.getElementById('trend7dBtn');
+  if (!details || !btn) return;
+  const open = details.style.display !== 'none';
+  details.style.display = open ? 'none' : 'flex';
+  btn.textContent = open ? '▼ Voir les prévisions détaillées sur 7 jours (pas de 3h)' : '▲ Masquer les prévisions détaillées sur 7 jours';
+  if (!open) setTimeout(() => details.scrollIntoView({behavior:'smooth', block:'nearest'}), 50);
+}
 
 function calculateModelConfidence(results) { 
   const container = document.getElementById("confidenceDetails"); 
@@ -2330,7 +2636,9 @@ function mergeArome15MinIntoHourly(h, shortH, now) {
   });
 }
 
-async function loadModelData(modelName) { 
+async function loadModelData(modelName, options = {}) {
+  const update24h = options.update24h !== false;
+  const updateModelPanel = options.updateModelPanel !== false; 
   const errEl = document.getElementById("arError"); 
   const url = `https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}&hourly=temperature_2m,apparent_temperature,dew_point_2m,precipitation,precipitation_probability,weather_code,wind_speed_10m,wind_direction_10m,wind_gusts_10m,relative_humidity_2m,cloud_cover,cloud_cover_low,cloud_cover_mid,cloud_cover_high,surface_pressure,pressure_msl,cape&models=${modelName}&forecast_days=7&timezone=Europe%2FParis`; 
   try { 
@@ -2339,10 +2647,13 @@ async function loadModelData(modelName) {
     const data = await res.json(); 
     const h = data.hourly;
 
-    // PRESSION 24H : on utilise un flux Open-Meteo indépendant du modèle
-    // sélectionné. Certains modèles ne renvoient pas toujours pressure_msl.
-    // L'alignement se fait d'abord par l'heure exacte, puis par l'heure la plus proche.
+    // Pour AROME, la pression reste celle du flux AROME demandé ci-dessus.
+    // Le flux générique n'est utilisé qu'en secours pour les autres modèles,
+    // afin que le bloc 24 h ne mélange jamais une pression d'un autre modèle.
     try {
+      if (String(modelName).includes('arome')) {
+        // Aucune surcharge : on conserve pressure_msl / surface_pressure renvoyés par AROME.
+      } else {
       const pressureUrl = `https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}&hourly=pressure_msl,surface_pressure&forecast_days=7&timezone=Europe%2FParis`;
       const pressureRes = await fetch(pressureUrl);
       if (pressureRes.ok) {
@@ -2377,6 +2688,7 @@ async function loadModelData(modelName) {
             Number.isFinite(Number(v)) ? Number(v) : Number(h.surface_pressure?.[i])
           );
         }
+      }
       }
     } catch (pressureError) {
       console.warn('Pression 24h indisponible:', pressureError);
@@ -2546,6 +2858,9 @@ async function loadModelData(modelName) {
 
     const liveTemp = nearestValid(h.temperature_2m, idx, 0);
 
+    // Le flux AROME dédié est la seule source autorisée pour le bloc 24 h.
+    // Le sélecteur de modèle peut donc changer sans remplacer cette prévision.
+
     // Le ressenti doit correspondre au même créneau que la température affichée.
     // On privilégie donc la valeur hybride AROME 15 min lorsqu'elle a remplacé
     // l'horaire AROME HD, puis on retombe sur AROME HD uniquement en secours.
@@ -2575,34 +2890,40 @@ async function loadModelData(modelName) {
 
     const liveHum = nearestValid(h.relative_humidity_2m, idx, 0);
 
+    if (update24h) {
     document.getElementById("topLiveTemp").textContent = num(liveTemp);
-    document.getElementById("topLiveFeel").textContent = `Ressenti ${num(liveFeel)}°C`;
-    document.getElementById("topLiveHum").textContent = num(liveHum, 0) + " %";
-    document.getElementById("topLiveWind").textContent = num(h.wind_speed_10m[idx]) + " km/h (" + dir(h.wind_direction_10m[idx]) + ")";
-    document.getElementById("topLiveGust").textContent = h.wind_gusts_10m ? num(h.wind_gusts_10m[idx]) + " km/h" : "--";
-    document.getElementById("topLiveRain").textContent = num(h.precipitation[idx]) + " mm";
-    document.getElementById("topLiveTime").textContent = `Dernière mesure : ${h.time[idx].split('T')[1]}`;
+        document.getElementById("topLiveFeel").textContent = `Ressenti ${num(liveFeel)}°C`;
+        document.getElementById("topLiveHum").textContent = num(liveHum, 0) + " %";
+        document.getElementById("topLiveWind").textContent = num(h.wind_speed_10m[idx]) + " km/h (" + dir(h.wind_direction_10m[idx]) + ")";
+        document.getElementById("topLiveGust").textContent = h.wind_gusts_10m ? num(h.wind_gusts_10m[idx]) + " km/h" : "--";
+        document.getElementById("topLiveRain").textContent = num(h.precipitation[idx]) + " mm";
+        document.getElementById("topLiveTime").textContent = `Dernière mesure : ${h.time[idx].split('T')[1]}`;
+    
+        const feelVal = liveFeel;
+        const percent = Math.max(0, Math.min(100, ((feelVal + 10) / 45) * 100));
+        document.getElementById("thermalBar").style.width = percent + "%";
+    
+        }
 
-    const feelVal = liveFeel;
-    const percent = Math.max(0, Math.min(100, ((feelVal + 10) / 45) * 100));
-    document.getElementById("thermalBar").style.width = percent + "%";
-
+    if (updateModelPanel) {
     document.getElementById("arTemp").textContent = num(liveTemp); 
-    document.getElementById("arFeel").textContent = num(liveFeel); 
-    document.getElementById("arWind").textContent = num(h.wind_speed_10m[idx]) + " km/h"; 
-    document.getElementById("arGust").textContent = h.wind_gusts_10m ? num(h.wind_gusts_10m[idx]) + " km/h" : "--"; 
-    document.getElementById("arDir").textContent = dir(h.wind_direction_10m[idx]); 
-    document.getElementById("arPress").textContent = h.surface_pressure ? Math.round(h.surface_pressure[idx]) + " hPa" : "N/A"; 
-    document.getElementById("arRain").textContent = num(h.precipitation[idx]) + " mm"; 
-    document.getElementById("arHum").textContent = num(h.relative_humidity_2m[idx], 0) + " %"; 
-    document.getElementById("arCloud").textContent = num(effectiveCloud(h.cloud_cover?.[idx], h.cloud_cover_low?.[idx], h.cloud_cover_mid?.[idx], h.cloud_cover_high?.[idx]), 0) + " %"; 
+        document.getElementById("arFeel").textContent = num(liveFeel); 
+        document.getElementById("arWind").textContent = num(h.wind_speed_10m[idx]) + " km/h"; 
+        document.getElementById("arGust").textContent = h.wind_gusts_10m ? num(h.wind_gusts_10m[idx]) + " km/h" : "--"; 
+        document.getElementById("arDir").textContent = dir(h.wind_direction_10m[idx]); 
+        document.getElementById("arPress").textContent = h.surface_pressure ? Math.round(h.surface_pressure[idx]) + " hPa" : "N/A"; 
+        document.getElementById("arRain").textContent = num(h.precipitation[idx]) + " mm"; 
+        document.getElementById("arHum").textContent = num(h.relative_humidity_2m[idx], 0) + " %"; 
+        document.getElementById("arCloud").textContent = num(effectiveCloud(h.cloud_cover?.[idx], h.cloud_cover_low?.[idx], h.cloud_cover_mid?.[idx], h.cloud_cover_high?.[idx]), 0) + " %"; 
+    
+        }
 
-    updateShortTermSummary(h, idx);
+    if (update24h) updateShortTermSummary(h, idx);
 
     // Le widget des prochaines 24 h est recréé par updateShortTermSummary().
     // On renseigne ensuite clairement la combinaison réellement utilisée.
     const runInfoEl = document.getElementById('aromeRunInfo');
-    if (runInfoEl) {
+    if (runInfoEl && updateModelPanel) {
       if (String(modelName).includes('arome')) {
         if (h.__aromeHybrid) {
           const shortLabel = String(h.__aromeShortModel).includes('_hd_15min')
@@ -2775,11 +3096,15 @@ async function loadAll() {
     loadVigilance(), 
     loadAirQuality(), 
     loadHistory(), 
-    loadModelData(currentOpenMeteoModel), 
+    loadModelData(currentOpenMeteoModel, { update24h: false }),
+    // Les prochaines 24 h sont toujours alimentées par AROME, indépendamment du sélecteur.
+    loadModelData('meteofrance_arome_france_hd', { update24h: true, updateModelPanel: false }),
     loadEcmwfTrendData(),
     loadModelsComparisonChart() 
   ]); 
-  document.getElementById("status").textContent = "🟢 Données actualisées (" + spotName + ")"; 
+  document.getElementById("status").textContent = "🟢 Données actualisées • " + spotName;
+  const liveUpdateStatus = document.getElementById("liveUpdateStatus");
+  if (liveUpdateStatus) liveUpdateStatus.textContent = "Actualisé à " + new Date().toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'});
 } 
 
 loadAll(); 
