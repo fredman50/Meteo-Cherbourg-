@@ -3,7 +3,7 @@
 <head> 
 <meta charset="UTF-8"> 
 <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
-<title>Météo Cherbourg — Rue Marie Ernestine Serret</title> 
+<title>Météo Cherbourg</title> 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> 
 <style> 
 * { box-sizing: border-box; transition: background 0.3s, color 0.3s; } 
@@ -588,13 +588,13 @@ details[open] summary { margin-bottom: 12px; }
   <!-- HEADER --> 
   <div class="header"> 
     <div class="title-row">
-      <h1 id="mainTitle">🌦️ Météo Cherbourg — Rue Marie Ernestine Serret</h1>
+      <h1 id="mainTitle">🌦️ Météo Cherbourg</h1>
     </div>
     <div class="subtitle" id="mainSubtitle"> Comparateur de Modèles Météo & Station Réelle</div> 
     
     <div class="top-controls"> 
       <select id="spotSelect" class="select-spot" onchange="changeSpot(this)"> 
-        <option value="serret"> 📍 Cherbourg (Rue Marie Ernestine Serret) </option> 
+        <option value="serret"> 📍 Cherbourg </option> 
         <option value="cherbourg_port"> ⚓ Cherbourg — Port Chantereyne </option>
         <option value="cherbourg_maupertus"> ✈️ Cherbourg — Maupertus (Météo-France) </option> 
         <option value="houlgate"> 🏖️ Houlgate (Plage) </option> 
@@ -847,7 +847,7 @@ details[open] summary { margin-bottom: 12px; }
     <h2> 🎯 FIABILITÉ / ACCORD DES MODÈLES </h2> 
     <div class="confidence-main"> 
       <div> 
-        <div class="label"> ACCORD ARPEGE • ECMWF • ICON • GFS </div> 
+        <div class="label"> ACCORD ARPEGE (4 j) • ECMWF • ICON • GFS </div> 
         <div class="confidence-score" id="confidenceScore"> -- </div> 
       </div> 
       <div class="confidence-label" id="confidenceLabel"> Analyse... </div> 
@@ -954,15 +954,17 @@ details[open] summary { margin-bottom: 12px; }
 <script> 
 let LAT = 49.635; 
 let LON = -1.615; 
-let spotName = "Cherbourg (Rue Marie Ernestine Serret)"; 
+let spotName = "Cherbourg"; 
 let currentOpenMeteoModel = 'meteofrance_arome_france_hd'; 
 let currentModelLabel = 'AROME'; 
 let comparisonChart = null; 
 let currentCompareMetric = 'temperature_2m'; 
-let cachedCompareData = null; 
+let cachedCompareData = null;
+let arome24hHourly = null;
+let arome24hCurrentIdx = 0; 
 
 const SPOTS = { 
-  serret: { lat:49.635, lon:-1.615, name:"Cherbourg (Rue Marie Ernestine Serret)", isStatic:false },
+  serret: { lat:49.635, lon:-1.615, name:"Cherbourg", isStatic:false },
   cherbourg_port: { lat:49.647, lon:-1.628, name:"Cherbourg — Port Chantereyne", isStatic:true, staticId:"STATIC0464" }, 
   cherbourg_maupertus: { lat:49.650, lon:-1.470, name:"Cherbourg — Maupertus (Météo-France)", isMaupertus:true, stationId:"07024" }, 
   houlgate: { lat:49.308, lon:-0.079, name:"Houlgate — Plage", isStatic:false }, 
@@ -1018,9 +1020,10 @@ function switchModel(openMeteoModelName, titleText, btnElement) {
     openMeteoModelName.includes('arome')
       ? 'AROME HD • 15 min prioritaire sur +6 h • puis échéance horaire'
       : `${currentModelLabel} • échéance horaire • prévision locale`; 
-  // Le modèle sélectionné ne touche JAMAIS au bloc des prochaines 24 h.
+  // Le modèle sélectionné est strictement séparé du bloc des prochaines 24 h.
+  // Il ne peut ni l'alimenter ni le réécrire.
   loadModelData(currentOpenMeteoModel, { update24h: false });
-  // Une source dédiée AROME alimente systématiquement les prochaines 24 h.
+  // Seule cette requête AROME dédiée a le droit d'écrire le widget 24 h.
   loadModelData('meteofrance_arome_france_hd', { update24h: true, updateModelPanel: false });
 } 
 
@@ -1556,7 +1559,7 @@ function updateShortTermSummary(h, idx) {
   }).join('');
 
   const weatherCells = hours.map(x =>
-    `<div class="rain24-cell"><div class="rain24-icon">${weatherIcon(x.code, x.cloud, x.rain, currentOpenMeteoModel.includes('arome'))}</div><div class="rain24-temp">${Math.round(x.temp)}°</div></div>`
+    `<div class="rain24-cell"><div class="rain24-icon">${weatherIcon(x.code, x.cloud, x.rain, true)}</div><div class="rain24-temp">${Math.round(x.temp)}°</div></div>`
   ).join('');
 
   const labelCell = (main, unit='') => `<div class="rain24-side">${main}${unit ? `<br><span style="font-size:9px;font-weight:500">${unit}</span>` : ''}</div>`;
@@ -2227,7 +2230,7 @@ async function loadModelsComparisonChart() {
   ];
 
   const fetchModel = async (modelName) => {
-    const url = `https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}&hourly=temperature_2m,wind_gusts_10m,precipitation&models=${modelName}&forecast_days=7&timezone=Europe%2FParis`;
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}&hourly=temperature_2m,wind_gusts_10m,precipitation&models=${modelName}&forecast_days=${modelName === 'meteofrance_arpege_europe' ? 4 : 7}&timezone=Europe%2FParis`;
     const res = await fetch(url);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
@@ -2315,23 +2318,39 @@ function renderComparisonChart(results, metric) {
     const h = data?.hourly || {};
     const timeMap = new Map((h.time || []).map((t, i) => [new Date(t).getTime(), i]));
 
+    // Chaque modèle ne doit afficher QUE sa propre échéance.
+    // ARPEGE Europe est limité à 4 jours chez Open-Meteo : on ne doit donc
+    // surtout pas transformer les heures suivantes en zéros ou en valeurs
+    // artificielles pour remplir la semaine.
+    const modelTimes = (h.time || [])
+      .map(t => new Date(t).getTime())
+      .filter(Number.isFinite);
+    const modelTimeSet = new Set(modelTimes);
+    const lastModelTime = modelTimes.length ? Math.max(...modelTimes) : -Infinity;
+
     const values = selectedTimes.map(ts => {
       const sourceIndex = timeMap.get(ts);
       if (sourceIndex === undefined || !h[metric]) return null;
-      const value = Number(h[metric][sourceIndex]);
+      if (!modelTimeSet.has(ts) || ts > lastModelTime) return null;
+      const raw = h[metric][sourceIndex];
+      // null/undefined = donnée absente, jamais 0 par défaut.
+      if (raw === null || raw === undefined || raw === '') return null;
+      const value = Number(raw);
       return Number.isFinite(value) ? value : null;
     });
 
+    const trimmedValues = values;
+
     return {
       label: models[index].label,
-      data: values,
+      data: trimmedValues,
       borderColor: models[index].color,
       backgroundColor: models[index].color,
       borderWidth: 2,
       tension: 0.3,
       pointRadius: 0,
       pointHoverRadius: 4,
-      spanGaps: true,
+      spanGaps: false,
       fill: false
     };
   });
@@ -2918,7 +2937,12 @@ async function loadModelData(modelName, options = {}) {
     
         }
 
-    if (update24h) updateShortTermSummary(h, idx);
+    if (update24h) {
+      // Verrouillage absolu : le widget 24 h ne lit que la copie AROME dédiée.
+      arome24hHourly = h;
+      arome24hCurrentIdx = idx;
+      updateShortTermSummary(arome24hHourly, arome24hCurrentIdx);
+    }
 
     // Le widget des prochaines 24 h est recréé par updateShortTermSummary().
     // On renseigne ensuite clairement la combinaison réellement utilisée.
