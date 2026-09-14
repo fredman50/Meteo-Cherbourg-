@@ -595,6 +595,7 @@ details[open] summary { margin-bottom: 12px; }
     <div class="top-controls"> 
       <select id="spotSelect" class="select-spot" onchange="changeSpot(this)"> 
         <option value="serret"> 📍 Cherbourg </option> 
+        <option value="geoloc">📍 Ma position</option>
         <option value="cherbourg_port"> ⚓ Cherbourg — Port Chantereyne </option>
         <option value="cherbourg_maupertus"> ✈️ Cherbourg — Maupertus (Météo-France) </option> 
         <option value="houlgate"> 🏖️ Houlgate (Plage) </option> 
@@ -977,16 +978,46 @@ function updatePortChantereyneWidget() {
   if (widget) widget.style.display = value === "cherbourg_port" ? "block" : "none";
 }
 
-function changeSpot(select) { 
-  const spot = SPOTS[select.value]; 
-  if (spot) { 
-    LAT = spot.lat; 
-    LON = spot.lon; 
-    spotName = spot.name; 
-    document.getElementById('mainTitle').textContent = `🌦️ Météo ${spotName}`; 
+function changeSpot(select) {
+  if (select.value === 'geoloc') {
+    if (!navigator.geolocation) {
+      alert('La géolocalisation n’est pas disponible sur cet appareil.');
+      select.value = 'serret';
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(async position => {
+      LAT = position.coords.latitude;
+      LON = position.coords.longitude;
+      spotName = 'Ma position';
+      document.getElementById('mainTitle').textContent = '🌦️ Météo — Ma position';
+      updatePortChantereyneWidget();
+      loadAll();
+      // On essaie de récupérer le nom de la commune sans transmettre l’adresse exacte à l’interface.
+      try {
+        const r = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(LAT + ',' + LON)}&count=1&language=fr&format=json`);
+        const d = await r.json();
+        const place = d?.results?.[0]?.name;
+        if (place) {
+          spotName = place;
+          document.getElementById('mainTitle').textContent = `🌦️ Météo ${spotName}`;
+          document.getElementById('modelTitle').textContent = `🤖 ${currentModelLabel} — ${spotName}`;
+        }
+      } catch (_) {}
+    }, error => {
+      alert(error.code === 1 ? 'Autorisation de localisation refusée.' : 'Impossible de récupérer votre position.');
+      select.value = 'serret';
+    }, { enableHighAccuracy: true, timeout: 10000, maximumAge: 300000 });
+    return;
+  }
+  const spot = SPOTS[select.value];
+  if (spot) {
+    LAT = spot.lat;
+    LON = spot.lon;
+    spotName = spot.name;
+    document.getElementById('mainTitle').textContent = `🌦️ Météo ${spotName}`;
     updatePortChantereyneWidget();
-    loadAll(); 
-  } 
+    loadAll();
+  }
 } 
 
 updatePortChantereyneWidget();
