@@ -713,6 +713,13 @@ details[open] summary { margin-bottom: 12px; }
         <div><span>🌧️ Pluie</span><strong id="summaryRain">--</strong><small>sur 24h</small></div>
         <div><span>💨 Rafale</span><strong id="summaryGust">--</strong><small>max prévue</small></div>
       </div>
+    <div class="mf-rain-hour-mini">
+      <div class="mf-rain-hour-mini-text">
+        🌧️ <strong>Pluie dans l’heure</strong><br>
+        Prévision détaillée Météo Agricole
+      </div>
+      <a href="https://www.lameteoagricole.net/meteo-minute-par-minute/Cherbourg-Octeville-50100.html" target="_blank" rel="noopener noreferrer">Voir →</a>
+    </div>
     </div>
     <button id="summary24DetailsBtn" type="button" onclick="toggleSummary24Details()" class="summary24-details-btn">▼ Voir les détails des prochaines 24 h</button>
     <div id="summaryTimeline" class="rain24-wrap" style="display:none; margin-top:9px;">
@@ -978,35 +985,51 @@ function updatePortChantereyneWidget() {
   if (widget) widget.style.display = value === "cherbourg_port" ? "block" : "none";
 }
 
+async function loadMyLocation(select) {
+  if (!window.isSecureContext && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
+    alert('La localisation nécessite que le site soit ouvert en HTTPS. Si vous ouvrez le fichier directement depuis le téléphone, utilisez une version hébergée en HTTPS.');
+    select.value = 'serret';
+    return;
+  }
+  if (!navigator.geolocation) {
+    alert('La géolocalisation n’est pas disponible sur cet appareil ou ce navigateur.');
+    select.value = 'serret';
+    return;
+  }
+  navigator.geolocation.getCurrentPosition(async position => {
+    LAT = position.coords.latitude;
+    LON = position.coords.longitude;
+    spotName = 'Ma position';
+    document.getElementById('mainTitle').textContent = '🌦️ Météo — Ma position';
+    document.getElementById('modelTitle').textContent = `🤖 ${currentModelLabel} — Ma position`;
+    updatePortChantereyneWidget();
+    loadAll();
+
+    // Le nom de la commune est recherché à partir des coordonnées ; l’adresse précise n’est jamais affichée.
+    try {
+      const r = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${encodeURIComponent(LAT)}&lon=${encodeURIComponent(LON)}&format=json&accept-language=fr`);
+      const d = await r.json();
+      const a = d?.address || {};
+      const place = a.city || a.town || a.village || a.municipality || a.hamlet;
+      if (place) {
+        spotName = place;
+        document.getElementById('mainTitle').textContent = `🌦️ Météo ${spotName}`;
+        document.getElementById('modelTitle').textContent = `🤖 ${currentModelLabel} — ${spotName}`;
+      }
+    } catch (_) {}
+  }, error => {
+    let msg = 'Impossible de récupérer votre position.';
+    if (error.code === 1) msg = 'Localisation refusée. Autorisez la localisation pour ce site dans les réglages du navigateur, puis sélectionnez à nouveau « 📍 Ma position ». La météo ne peut pas récupérer votre GPS sans cette autorisation.';
+    if (error.code === 2) msg = 'Position indisponible. Vérifiez que la localisation du téléphone est activée, puis réessayez.';
+    if (error.code === 3) msg = 'La récupération de votre position a pris trop de temps. Vérifiez que la localisation est activée puis réessayez.';
+    alert(msg);
+    select.value = 'serret';
+  }, { enableHighAccuracy: true, timeout: 20000, maximumAge: 300000 });
+}
+
 function changeSpot(select) {
   if (select.value === 'geoloc') {
-    if (!navigator.geolocation) {
-      alert('La géolocalisation n’est pas disponible sur cet appareil.');
-      select.value = 'serret';
-      return;
-    }
-    navigator.geolocation.getCurrentPosition(async position => {
-      LAT = position.coords.latitude;
-      LON = position.coords.longitude;
-      spotName = 'Ma position';
-      document.getElementById('mainTitle').textContent = '🌦️ Météo — Ma position';
-      updatePortChantereyneWidget();
-      loadAll();
-      // On essaie de récupérer le nom de la commune sans transmettre l’adresse exacte à l’interface.
-      try {
-        const r = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(LAT + ',' + LON)}&count=1&language=fr&format=json`);
-        const d = await r.json();
-        const place = d?.results?.[0]?.name;
-        if (place) {
-          spotName = place;
-          document.getElementById('mainTitle').textContent = `🌦️ Météo ${spotName}`;
-          document.getElementById('modelTitle').textContent = `🤖 ${currentModelLabel} — ${spotName}`;
-        }
-      } catch (_) {}
-    }, error => {
-      alert(error.code === 1 ? 'Autorisation de localisation refusée.' : 'Impossible de récupérer votre position.');
-      select.value = 'serret';
-    }, { enableHighAccuracy: true, timeout: 10000, maximumAge: 300000 });
+    loadMyLocation(select);
     return;
   }
   const spot = SPOTS[select.value];
@@ -1880,13 +1903,6 @@ function updateShortTermSummary(h, idx) {
       
     </div></div>
     <div class="rain24-legend"><span>● Maintenant</span><span>— Prévision horaire</span></div>
-    <div class="mf-rain-hour-mini">
-      <div class="mf-rain-hour-mini-text">
-        🌧️ <strong>Pluie dans l’heure</strong><br>
-        Prévision détaillée Météo Agricole
-      </div>
-      <a href="https://www.lameteoagricole.net/meteo-minute-par-minute/Cherbourg-Octeville-50100.html" target="_blank" rel="noopener noreferrer">Voir →</a>
-    </div>
   `;
 }
 // --- TENDANCE 7 JOURS : VUE COMPACTE POUR LECTURE RAPIDE ---
